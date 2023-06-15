@@ -119,7 +119,7 @@ if 'dataframe' in st.session_state:
     fig.add_trace(go.Scatter(x = df.index,y = - df['Aluguel'].cumsum() + df['Investimento'],name = 'Alugar'))
     fig.update_layout(barmode = 'group',margin=dict(l=0, r=0, t=0, b=0))
     st.plotly_chart(fig)
-    st.download_button('Baixar Dados',df.to_csv(index = False,sep = ';',decimal = ',',encoding = 'ANSI').encode('ansi'),
+    st.download_button('Baixar Dados',df.to_csv(index = False,sep = ';',decimal = ',',encoding = 'utf-16').encode('utf-16'),
                        file_name='compraroualugar.csv',mime='text/csv')
 
 with st.sidebar:
