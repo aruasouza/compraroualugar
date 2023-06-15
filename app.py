@@ -4,6 +4,18 @@ import plotly.graph_objects as go
 import pandas as pd
 import numpy as np
 
+st.set_page_config(page_title = 'Comprar ou Alugar',page_icon = ':house:')
+style = '''
+<style>
+#MainMenu {visibility:hidden;}
+footer {visibility:hidden;}
+header {visibility:hidden;}
+.block-container {padding-top:1rem;}
+.e1fqkh3o4 {padding-top:1rem;}
+</style>
+'''
+st.markdown(style,unsafe_allow_html=True)
+
 def calculate():
     meses = st.session_state['anosfinanciamento'] * 12
     df = pd.DataFrame(index = list(range(meses + 1)))
@@ -95,10 +107,16 @@ if 'dataframe' in st.session_state:
     fig.add_trace(go.Scatter(x = df.index,y = df['Juros Investimento'].cumsum(),name = 'Juros Investimento'))
     fig.update_layout(title = 'Alugar',barmode = 'group',margin=dict(l=0, r=0, t=20, b=0))
     st.plotly_chart(fig)
-    st.header('Fluxos Anuais Total')
+    st.header('Fluxos Acumulados Total')
     fig = go.Figure()
     fig.add_trace(go.Scatter(x = df.index,y = df['Financiamento'].cumsum() - df['Prestação'].cumsum() + df['Valorização'].cumsum() - df['Depreciação'].cumsum(),name = 'Comprar'))
     fig.add_trace(go.Scatter(x = df.index,y = -df['Aluguel'].cumsum() + df['Juros Investimento'].cumsum(),name = 'Alugar'))
+    fig.update_layout(barmode = 'group',margin=dict(l=0, r=0, t=0, b=0))
+    st.plotly_chart(fig)
+    st.header('Evolução do Patrimônio Líquido')
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x = df.index,y = - df['Saldo Devedor'] + df['Valor Imóvel'],name = 'Comprar'))
+    fig.add_trace(go.Scatter(x = df.index,y = - df['Aluguel'].cumsum() + df['Investimento'],name = 'Alugar'))
     fig.update_layout(barmode = 'group',margin=dict(l=0, r=0, t=0, b=0))
     st.plotly_chart(fig)
 
