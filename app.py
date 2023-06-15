@@ -106,17 +106,17 @@ with st.sidebar:
     st.header('Comprar')
     col1,col2 = st.columns(2)
     with col1:
-        st.number_input('Valor do Imóvel',min_value = 0.0, value = 1000000.0, step=1000.0, format='%.2f', key='valorimovel')
-        st.number_input('Valorização do Imóvel (% a.a.)',min_value = 0.0, value = 5.0, step=.1, format='%.2f', key='valorizacao')
+        st.number_input('Valor do Imóvel',min_value = 0.0, value = 480000.0, step=1000.0, format='%.2f', key='valorimovel')
+        st.number_input('Valorização do Imóvel (% a.a.)',min_value = 0.0, value = 12.28, step=.1, format='%.2f', key='valorizacao')
         st.number_input('Anos Financiamento',min_value = 0, value = 5, step=1, key='anosfinanciamento')
     with col2:
-        st.number_input('Entrada',min_value = 0.0,max_value = st.session_state['valorimovel'], value = 100000.0, step=1000.0, format='%.2f', key='entrada')
+        st.number_input('Entrada',min_value = 0.0,max_value = st.session_state['valorimovel'], value = 96000.0, step=1000.0, format='%.2f', key='entrada')
         st.number_input('Depreciação (% a.a.)',min_value = 0.0, value = 4.0, step=.1, format='%.2f', key='depreciacao')
-        st.number_input('Taxa Financiamento (% a.a.)',min_value = 0.0, value = 10.0, step=1.0, key='taxafinanciamento')
+        st.number_input('Taxa Financiamento (% a.a.)',min_value = 0.0, value = 9.99, step=1.0, key='taxafinanciamento')
     st.header('Alugar')
     col1,col2 = st.columns(2)
     with col1:
-        st.number_input('Valor do Aluguel',min_value = 0.0, value = 3000.0, step=100.0, format='%.2f', key='aluguel')
+        st.number_input('Valor do Aluguel',min_value = 0.0, value = 1933.28, step=100.0, format='%.2f', key='aluguel')
     with col2:
         st.radio('Método',options = ['SAC','PRICE'],key = 'metodo')
     st.header('Variáveis Macroeconômicas')
@@ -124,5 +124,5 @@ with st.sidebar:
     with col1:
         st.number_input('Taxa Básica de Juros (% a.a.)',min_value = 0.0, value = 12.5, step=.1, format='%.2f', key='taxabase')
     with col2:
-        st.number_input('IPCA Esperado (% a.a.)',min_value = 0.0, value = 5.4, step=.1, format='%.2f', key='ipca')
+        st.number_input('IPCA Esperado (% a.a.)',min_value = 0.0, value = 5.417, step=.1, format='%.2f', key='ipca')
     st.button('Simular',on_click = calculate)
