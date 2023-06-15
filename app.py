@@ -113,12 +113,14 @@ if 'dataframe' in st.session_state:
     fig.add_trace(go.Scatter(x = df.index,y = -df['Aluguel'].cumsum() + df['Juros Investimento'].cumsum(),name = 'Alugar'))
     fig.update_layout(barmode = 'group',margin=dict(l=0, r=0, t=0, b=0))
     st.plotly_chart(fig)
-    # st.header('Evolução do Patrimônio Líquido')
-    # fig = go.Figure()
-    # fig.add_trace(go.Scatter(x = df.index,y = - df['Juros'].cumsum() - df['Saldo Devedor'] + df['Valor Imóvel'],name = 'Comprar'))
-    # fig.add_trace(go.Scatter(x = df.index,y = - df['Aluguel'].cumsum() + df['Investimento'],name = 'Alugar'))
-    # fig.update_layout(barmode = 'group',margin=dict(l=0, r=0, t=0, b=0))
-    # st.plotly_chart(fig)
+    st.header('Evolução do Patrimônio Líquido')
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x = df.index,y = - df['Prestação'].cumsum() - df['Saldo Devedor'] + df['Valor Imóvel'],name = 'Comprar'))
+    fig.add_trace(go.Scatter(x = df.index,y = - df['Aluguel'].cumsum() + df['Investimento'],name = 'Alugar'))
+    fig.update_layout(barmode = 'group',margin=dict(l=0, r=0, t=0, b=0))
+    st.plotly_chart(fig)
+    st.download_button('Baixar Dados',df.to_csv(index = False,sep = ';',decimal = ',',encoding = 'ANSI').encode('ansi'),
+                       file_name='compraroualugar.csv',mime='text/csv')
 
 with st.sidebar:
     st.header('Comprar')
