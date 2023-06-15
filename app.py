@@ -107,7 +107,7 @@ with st.sidebar:
     col1,col2 = st.columns(2)
     with col1:
         st.number_input('Valor do Imóvel',min_value = 0.0, value = 480000.0, step=1000.0, format='%.2f', key='valorimovel')
-        st.number_input('Valorização do Imóvel (% a.a.)',min_value = 0.0, value = 12.28, step=.1, format='%.2f', key='valorizacao')
+        st.number_input('Valorização do Imóvel (% a.a.)',min_value = 0.0, value = 9.1, step=.1, format='%.2f', key='valorizacao')
         st.number_input('Anos Financiamento',min_value = 0, value = 5, step=1, key='anosfinanciamento')
     with col2:
         st.number_input('Entrada',min_value = 0.0,max_value = st.session_state['valorimovel'], value = 96000.0, step=1000.0, format='%.2f', key='entrada')
