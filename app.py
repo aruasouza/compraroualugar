@@ -59,7 +59,7 @@ def calculate():
     df['Aluguel'] = [0] + list(aluguel * ((1 + ipca) ** df['Ano']))[1:]
     df['Investimento'] = [(entrada + aquisicao) * ((1 + selic_mes) ** i) for i in range(meses + 1)]
     df['Juros Investimento'] = df['Investimento'].diff().fillna(0)
-    df['Financiamento'] = [financiamento] + ([0] * meses)
+    df['Financiamento'] = [financiamento - aquisicao] + ([0] * meses)
     anual_df = df.groupby('Ano').sum()
     st.session_state['dataframe'] = df
     st.session_state['anual_df'] = anual_df
@@ -128,7 +128,7 @@ with st.sidebar:
     col1,col2 = st.columns(2)
     with col1:
         st.number_input('Valor do Imóvel',min_value = 0.0, value = 480000.0, step=1000.0, format='%.2f', key='valorimovel')
-        st.number_input('Valorização do Imóvel (% a.a.)',min_value = 0.0, value = 9.1, step=.1, format='%.2f', key='valorizacao')
+        st.number_input('Valorização do Imóvel (% a.a.)',min_value = 0.0, value = 5.98, step=.1, format='%.2f', key='valorizacao')
         st.number_input('Anos Financiamento',min_value = 0, value = 5, step=1, key='anosfinanciamento')
         st.number_input('Taxa de Aquisição (%)',min_value = 0.0,value = 2.0,step = .1,format='%.2f',key = 'taxaaquisicao')
     with col2:
