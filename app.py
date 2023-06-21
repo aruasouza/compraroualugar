@@ -3,6 +3,7 @@ from plotly.subplots import make_subplots
 import plotly.graph_objects as go
 import pandas as pd
 import numpy as np
+import numpy_financial as npf
 
 st.set_page_config(page_title = 'Comprar ou Alugar',page_icon = ':house:')
 style = '''
@@ -57,12 +58,20 @@ def calculate():
     df['Resultado Imóvel'] = df['Valorização'] - df['Depreciação']
     df['Valor Imóvel'] = df['Resultado Imóvel'].cumsum() + valorimovel
     df['Aluguel'] = [0] + list(aluguel * ((1 + ipca) ** df['Ano']))[1:]
+
+    df['Sobra de Caixa'] = (df['Prestação'] - df['Aluguel']).cumsum()
+    df['Juros Sobra de Caixa'] = 0
+    for i in range(1,len(df)):
+        df.loc[i,'Juros Sobra de Caixa'] = (df.loc[i - 1,'Sobra de Caixa'] + sum(df.loc[:i,'Juros Sobra de Caixa'])) * selic_mes 
     df['Investimento'] = [(entrada + aquisicao) * ((1 + selic_mes) ** i) for i in range(meses + 1)]
+    df['Investimento'] += df['Juros Sobra de Caixa'].cumsum()
+
     df['Juros Investimento'] = df['Investimento'].diff().fillna(0)
     df['Financiamento'] = [financiamento - aquisicao] + ([0] * meses)
     anual_df = df.groupby('Ano').sum()
     st.session_state['dataframe'] = df
     st.session_state['anual_df'] = anual_df
+    st.session_state['selicmensal'] = selic_mes
 
 st.title('Simulador Alugar ou Comprar')
 st.header('Aruã Viggiano Souza')
@@ -121,6 +130,17 @@ if 'dataframe' in st.session_state:
     fig.add_trace(go.Scatter(x = df.index,y = - df['Aluguel'].cumsum() + df['Investimento'],name = 'Alugar'))
     fig.update_layout(barmode = 'group',margin=dict(l=0, r=0, t=0, b=0),hovermode='x unified')
     st.plotly_chart(fig)
+    taxa = st.session_state['selicmensal']
+    st.header('VPL')
+    col1,col2 = st.columns(2)
+    valorimovelinicio = pd.Series([df['Valor Imóvel'].iloc[0]] + ([0] * (len(df) - 1)),df.index)
+    valorimovelfinal = pd.Series(([0] * (len(df) - 1)) + [df['Valor Imóvel'].iloc[-1]],df.index)
+    comprar_vpl = int(npf.npv(taxa,(-valorimovelinicio + df['Financiamento'] - df['Prestação'] + valorimovelfinal).values))
+    alugar_vpl = int(npf.npv(taxa,-df['Aluguel'].values))
+    ganho_comprar = round(100 * (comprar_vpl - alugar_vpl) / abs(alugar_vpl),1)
+    ganho_alugar = round(100 * (alugar_vpl - comprar_vpl) / abs(comprar_vpl),1)
+    col1.metric('Comprar',comprar_vpl,f'{ganho_comprar}%')
+    col2.metric('Alugar',alugar_vpl,f'{ganho_alugar}%')
     st.download_button('Baixar Dados',df.to_csv(index = False,sep = ';',decimal = ',',encoding = 'utf-16').encode('utf-16'),
                        file_name='compraroualugar.csv',mime='text/csv')
 
